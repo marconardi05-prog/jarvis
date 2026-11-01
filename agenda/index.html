@@ -22,7 +22,7 @@
 :root{
   --bg:#f3f5f2; --surface:#ffffff; --sunk:#e8ece8; --ink:#141c19; --muted:#5f6c67; --line:#dfe4e0;
   --accent:#0e6b5c; --accent-ink:#ffffff; --today:#e0552d;
-  --c-personale:#0e8a74; --c-famiglia:#e0552d; --c-amici:#c98a00; --c-salute:#d23c62; --c-sport:#2f6fd8; --c-casa:#7b57d1; --c-altro:#6c7772;
+  --c-personale:#0e8a74; --c-lavoro:#3c5a80; --c-famiglia:#e0552d; --c-amici:#c98a00; --c-salute:#d23c62; --c-sport:#2f6fd8; --c-casa:#7b57d1; --c-altro:#6c7772;
   --display:"Bricolage Grotesque","Avenir Next Condensed",system-ui,sans-serif;
   --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:18px; --shadow:0 1px 2px rgba(20,28,25,.05),0 4px 14px rgba(20,28,25,.05);
@@ -31,12 +31,12 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0b1110; --surface:#151d1b; --sunk:#111816; --ink:#e8efeb; --muted:#8d9b96; --line:#232e2b;
   --accent:#43c4a9; --accent-ink:#04211b; --today:#ff7a52;
-  --c-personale:#43c4a9; --c-famiglia:#ff7a52; --c-amici:#f2b72f; --c-salute:#ff6d8f; --c-sport:#6ea6ff; --c-casa:#ac8dff; --c-altro:#9aa6a1;
+  --c-personale:#43c4a9; --c-lavoro:#9dbbe0; --c-famiglia:#ff7a52; --c-amici:#f2b72f; --c-salute:#ff6d8f; --c-sport:#6ea6ff; --c-casa:#ac8dff; --c-altro:#9aa6a1;
   --shadow:0 1px 2px rgba(0,0,0,.3); --glass:rgba(11,17,16,.82); color-scheme:dark }}
 :root[data-theme="dark"]{
   --bg:#0b1110; --surface:#151d1b; --sunk:#111816; --ink:#e8efeb; --muted:#8d9b96; --line:#232e2b;
   --accent:#43c4a9; --accent-ink:#04211b; --today:#ff7a52;
-  --c-personale:#43c4a9; --c-famiglia:#ff7a52; --c-amici:#f2b72f; --c-salute:#ff6d8f; --c-sport:#6ea6ff; --c-casa:#ac8dff; --c-altro:#9aa6a1;
+  --c-personale:#43c4a9; --c-lavoro:#9dbbe0; --c-famiglia:#ff7a52; --c-amici:#f2b72f; --c-salute:#ff6d8f; --c-sport:#6ea6ff; --c-casa:#ac8dff; --c-altro:#9aa6a1;
   --shadow:0 1px 2px rgba(0,0,0,.3); --glass:rgba(11,17,16,.82); color-scheme:dark }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -251,6 +251,28 @@ textarea.in{width:100%;border:0;background:var(--surface);box-shadow:0 0 0 1px v
 #toast.show{opacity:1;transform:translate(-50%,0)}
 #toast button{background:none;border:0;color:inherit;font-weight:800;text-decoration:underline;margin-left:10px;padding:0}
 #toast.act{pointer-events:auto}
+/* riepilogo */
+.brief{margin-top:14px;background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow),0 0 0 1px var(--line);padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.brief .ic{--k:var(--accent)}
+.brief b{display:block;font:700 17px var(--display);letter-spacing:-.01em;margin-bottom:2px}
+.brief p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.5}
+.brief p strong{color:var(--ink);font-weight:600}
+.bell{display:inline-flex;align-items:center;gap:3px}
+/* avviso a comparsa */
+.alarm{position:fixed;z-index:50;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);width:min(560px,calc(100% - 24px));
+  background:var(--ink);color:var(--bg);border-radius:20px;padding:14px 14px 14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 18px 40px -10px rgba(0,0,0,.45);animation:drop .35s cubic-bezier(.2,.9,.2,1.2)}
+@keyframes drop{from{transform:translate(-50%,-30px);opacity:0}}
+.alarm .ic{--k:var(--today);background:var(--today);color:#fff;animation:ring 1s ease-in-out 3}
+@keyframes ring{25%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}}
+.alarm .b{flex:1;min-width:0}
+.alarm b{display:block;font:700 17px var(--display);overflow-wrap:anywhere}
+.alarm span{font-size:14px;opacity:.75}
+.alarm button{border:0;background:var(--bg);color:var(--ink);font-weight:700;border-radius:12px;padding:10px 14px}
+.btn.ghost{background:none;box-shadow:0 0 0 1px var(--line);margin-top:10px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.ghost svg{width:18px;height:18px}
+.status{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;margin-left:auto;white-space:nowrap}
+.status.on{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.status.off{background:var(--sunk);color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -290,6 +312,8 @@ textarea.in{width:100%;border:0;background:var(--surface);box-shadow:0 0 0 1px v
       <label class="grow" id="rowEnd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>Fine</span><input type="time" id="fEnd"></label>
       <label class="grow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.5l3 3-3 3"/><path d="M4 11.5v-1a5 5 0 015-5h11M7 21.5l-3-3 3-3"/><path d="M20 12.5v1a5 5 0 01-5 5H4"/></svg><span>Ripeti</span>
         <select id="fRep"><option value="none">Mai</option><option value="day">Ogni giorno</option><option value="week">Ogni settimana</option><option value="month">Ogni mese</option><option value="year">Ogni anno</option></select></label>
+      <label class="grow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0112 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19.5a2 2 0 004 0"/></svg><span>Avviso</span>
+        <select id="fAlert"><option value="-1">Nessuno</option><option value="0">All'ora</option><option value="5">5 min prima</option><option value="15">15 min prima</option><option value="30">30 min prima</option><option value="60">1 ora prima</option><option value="120">2 ore prima</option><option value="1440">1 giorno prima</option></select></label>
     </div>
     <span class="lab">Categoria</span>
     <div class="cats" id="fCats"></div>
@@ -302,6 +326,7 @@ textarea.in{width:100%;border:0;background:var(--surface);box-shadow:0 0 0 1px v
       <button type="button" class="btn del" id="edDel" hidden>Elimina</button>
       <button type="submit" class="btn pri">Salva</button>
     </div>
+    <button type="button" class="btn ghost" id="edIcs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="4.5" width="17" height="16" rx="4"/><path d="M3.5 9.5h17M8 2.5v4M16 2.5v4M12 12.5v5M9.5 15h5"/></svg>Salva e aggiungi al Calendario iPhone</button>
     <div class="confirm" id="delBox" hidden>
       <p id="delQ">Eliminare questo appuntamento?</p>
       <div class="acts" id="delActs"></div>
@@ -313,6 +338,8 @@ textarea.in{width:100%;border:0;background:var(--surface);box-shadow:0 0 0 1px v
   <div class="sheet menu">
     <div class="grab"></div>
     <div class="shead"><h3>Agenda</h3><button type="button" id="menuClose">Chiudi</button></div>
+    <button class="btn" id="notifBtn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0112 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19.5a2 2 0 004 0"/></svg></span><span>Notifiche<small id="notifTxt">Avvisi degli appuntamenti mentre l'app è aperta</small></span><span class="status off" id="notifSt">Spente</span></button>
+    <button class="btn" id="icsAllBtn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="4.5" width="17" height="16" rx="4"/><path d="M3.5 9.5h17M8 2.5v4M16 2.5v4"/></svg></span><span>Copia tutto nel Calendario iPhone<small>Così gli avvisi suonano anche ad app chiusa</small></span></button>
     <button class="btn" id="expBtn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg></span><span>Salva una copia di sicurezza<small>Un file con tutti i tuoi dati, da tenere su File o iCloud</small></span></button>
     <button class="btn" id="impBtn"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9M7 14l5-5 5 5M4 4h16"/></svg></span><span>Ripristina da una copia<small>Carica un file di backup salvato prima</small></span></button>
     <input type="file" id="impFile" accept="application/json,.json" hidden>
@@ -325,6 +352,7 @@ textarea.in{width:100%;border:0;background:var(--surface);box-shadow:0 0 0 1px v
   </div>
 </div>
 
+<div class="alarm" id="alarm" role="alert" hidden><span class="ic"></span><div class="b"><b id="alT"></b><span id="alS"></span></div><button id="alOk">OK</button></div>
 <div id="toast" role="status"></div>
 
 <script>
@@ -344,6 +372,7 @@ const durTxt=m=>{ if(m<=0) return ""; const h=Math.floor(m/60), r=m%60; return h
 const S='viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
 const ICON={
   personale:`<svg ${S}><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>`,
+  lavoro:`<svg ${S}><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7V5.5a2 2 0 012-2h3a2 2 0 012 2V7M3 12.5h18"/></svg>`,
   famiglia:`<svg ${S}><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0112 7.3 4.3 4.3 0 0119.5 10c0 5.4-7.5 10-7.5 10z"/></svg>`,
   amici:`<svg ${S}><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.6a3.5 3.5 0 010 6.8M18.5 14a6.5 6.5 0 013 6"/></svg>`,
   salute:`<svg ${S}><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>`,
@@ -353,8 +382,9 @@ const ICON={
 };
 const PIN=`<svg ${S}><path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>`;
 const REP=`<svg ${S}><path d="M17 2.5l3 3-3 3"/><path d="M4 11.5v-1a5 5 0 015-5h11"/></svg>`;
+const BELL=`<svg ${S}><path d="M6 9a6 6 0 0112 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19.5a2 2 0 004 0"/></svg>`;
 const NOTE=`<svg ${S}><path d="M5 4h14v16H5zM9 9h6M9 13h6"/></svg>`;
-const CATS=[["personale","Personale"],["famiglia","Famiglia"],["amici","Amici"],["salute","Salute"],["sport","Sport"],["casa","Casa"],["altro","Altro"]];
+const CATS=[["personale","Personale"],["lavoro","Lavoro"],["famiglia","Famiglia"],["amici","Amici"],["salute","Salute"],["sport","Sport"],["casa","Casa"],["altro","Altro"]];
 const ck=c=>CATS.some(x=>x[0]===c)?c:"altro";
 const kv=c=>`--k:var(--c-${ck(c)})`;
 const icon=c=>`<span class="ic">${ICON[ck(c)]}</span>`;
@@ -466,7 +496,7 @@ function renderDay(d){
       if(r.gap) return `<div></div><div class="rail${first}${last}"></div><div class="gap">Libero · ${durTxt(r.gap)}</div>`;
       if(r.now) return `<div class="time" style="color:var(--today);padding-top:4px">${nowHM}</div><div class="rail now${first}${last}"><i></i></div><div class="now"><div class="line"><span>Adesso</span></div></div>`;
       const e=r.e, du=e.end?mins(e.end)-mins(e.start):0;
-      const sub=[e.place?`<span>${PIN}${esc(e.place)}</span>`:"",e.rep&&e.rep!=="none"?`<span>${REP}${({day:"ogni giorno",week:"ogni settimana",month:"ogni mese",year:"ogni anno"}[e.rep])}</span>`:"",e.note?`<span>${NOTE}${esc(e.note.length>60?e.note.slice(0,60)+"…":e.note)}</span>`:""].join("");
+      const sub=[e.place?`<span>${PIN}${esc(e.place)}</span>`:"",e.rep&&e.rep!=="none"?`<span>${REP}${({day:"ogni giorno",week:"ogni settimana",month:"ogni mese",year:"ogni anno"}[e.rep])}</span>`:"",e.alert!=null&&e.alert>=0?`<span class="bell">${BELL}${alertTxt(e.alert)}</span>`:"",e.note?`<span>${NOTE}${esc(e.note.length>60?e.note.slice(0,60)+"…":e.note)}</span>`:""].join("");
       return `<div class="time${r.past?" past":""}">${esc(e.start)}${e.end?`<small>${esc(e.end)}</small>`:""}</div>
         <div class="rail${first}${last}${r.past?" past":""}" style="${kv(e.cat)}"><i></i></div>
         <div class="${r.past?"past":""}"><button class="card tint" style="${kv(e.cat)}" data-ev="${e.id}" data-ds="${ds}">${icon(e.cat)}<span class="b"><div class="ti">${esc(e.title)}</div>${sub?`<div class="sub">${sub}</div>`:""}</span>${du>0?`<span class="dur">${durTxt(du)}</span>`:""}</button></div>`;
@@ -474,7 +504,7 @@ function renderDay(d){
   }
 
   const taskHtml=[...od.map(x=>taskRow(x,true)),...tk.map(x=>taskRow(x,false))].join("");
-  $("#view").innerHTML=`${cover}
+  $("#view").innerHTML=`${cover}${isToday?brief(ds,timed,all,od,tk,nowHM):""}
     <h2>Appuntamenti <button data-new="${ds}">+ Aggiungi</button></h2>
     ${alld}${tl}
     <h2>Da fare ${totT?`<small>${left?`${left} da completare`:"Tutto fatto ✓"}</small>`:""}</h2>
@@ -572,6 +602,7 @@ function openEditor(ev,ds){
   $("#fStart").value=ev&&!ev.allDay?ev.start:nh;
   $("#fEnd").value=ev&&!ev.allDay?(ev.end||""):addHour(nh);
   $("#fRep").value=ev?ev.rep||"none":"none";
+  $("#fAlert").value=String(ev&&ev.alert!=null?ev.alert:15);
   $("#fPlace").value=ev?ev.place||"":""; $("#fNote").value=ev?ev.note||"":"";
   cat=ev?ck(ev.cat):"personale"; renderCats(); setTimeRows();
   $("#edDel").hidden=!ev; $("#delBox").hidden=true;
@@ -589,11 +620,14 @@ $("#ed").onsubmit=e=>{
   const date=$("#fDate").value||editDs; const allDay=$("#fAll").checked;
   let start=$("#fStart").value||"09:00", end=$("#fEnd").value;
   if(end&&end<start) end="";
-  const data={title,date,allDay,start:allDay?"":start,end:allDay?"":end,cat,rep:$("#fRep").value,place:$("#fPlace").value.trim(),note:$("#fNote").value.trim()};
-  const was=!!editing;
-  if(editing) Object.assign(editing,data); else DB.events.push({id:uid(),...data});
+  const data={title,date,allDay,start:allDay?"":start,end:allDay?"":end,cat,rep:$("#fRep").value,alert:+$("#fAlert").value,place:$("#fPlace").value.trim(),note:$("#fNote").value.trim()};
+  const was=!!editing; let saved=editing;
+  if(editing) Object.assign(editing,data); else { saved={id:uid(),...data}; DB.events.push(saved); }
   save(); closeEd(); sel=date; render(true); toast(was?"Modificato":"Salvato");
+  if(wantIcs){ wantIcs=false; openIcs(buildIcs([saved]),`${saved.title.replace(/[^\w\- ]+/g,"").slice(0,30)||"evento"}.ics`); }
 };
+let wantIcs=false;
+$("#edIcs").onclick=()=>{ wantIcs=true; $("#ed").requestSubmit?$("#ed").requestSubmit():$("#ed").dispatchEvent(new Event("submit",{cancelable:true})); };
 $("#edDel").onclick=()=>{
   const ev=editing; if(!ev) return;
   const rec=ev.rep&&ev.rep!=="none";
@@ -612,7 +646,7 @@ $("#delActs").onclick=e=>{
 };
 
 /* ---------- menu / backup ---------- */
-$("#menuBtn").onclick=()=>{ $("#stats").textContent=`${DB.events.length} appuntamenti · ${DB.tasks.length} cose da fare · ${Object.keys(DB.notes).length} note. I dati restano solo su questo telefono: salva una copia ogni tanto.`; $("#wipeBox").hidden=true; $("#menuScrim").hidden=false; };
+$("#menuBtn").onclick=()=>{ $("#stats").textContent=`${DB.events.length} appuntamenti · ${DB.tasks.length} cose da fare · ${Object.keys(DB.notes).length} note. I dati restano solo su questo telefono: salva una copia ogni tanto.`; $("#wipeBox").hidden=true; notifState(); $("#menuScrim").hidden=false; };
 $("#menuClose").onclick=()=>$("#menuScrim").hidden=true;
 $("#menuScrim").addEventListener("click",e=>{ if(e.target.id==="menuScrim") $("#menuScrim").hidden=true; });
 $("#expBtn").onclick=async()=>{
@@ -636,6 +670,108 @@ $("#wipeBtn").onclick=()=>{ $("#wipeBox").hidden=false; };
 $("#wipeNo").onclick=()=>{ $("#wipeBox").hidden=true; };
 $("#wipeYes").onclick=()=>{ DB={events:[],tasks:[],notes:{}}; save(); $("#menuScrim").hidden=true; render(); toast("Agenda svuotata"); };
 
+/* ---------- riepilogo giornata ---------- */
+const alertTxt=a=>a===0?"all'ora":a<60?`${a} min prima`:a===60?"1 ora prima":a===1440?"1 giorno prima":`${a/60} ore prima`;
+function brief(ds,timed,all,od,tk,nowHM){
+  const h=new Date().getHours();
+  const hello=h<5?"Buonanotte":h<13?"Buongiorno":h<18?"Buon pomeriggio":"Buonasera";
+  const n=timed.length+all.length, work=[...timed,...all].filter(e=>ck(e.cat)==="lavoro").length;
+  const next=timed.find(e=>e.start>=nowHM);
+  const left=tk.filter(x=>!x.done).length+od.length;
+  let p=[];
+  if(!n) p.push("Oggi non hai impegni in agenda.");
+  else p.push(`Oggi hai <strong>${n} ${n===1?"impegno":"impegni"}</strong>${work?`, di cui ${work} di lavoro`:""}.`);
+  if(next){ const m=mins(next.start)-mins(nowHM); p.push(`Il prossimo è <strong>${esc(next.title)}</strong> alle ${esc(next.start)}${m>0?`, tra ${durTxt(m)}`:", adesso"}.`); }
+  else if(timed.length) p.push("Gli appuntamenti di oggi sono finiti.");
+  if(left) p.push(`Da fare: <strong>${left}</strong>${od.length?` (${od.length} dai giorni scorsi)`:""}.`);
+  if(h>=17){ const tm=ymd(addDays(parse(ds),1)), te=eventsOn(tm); const f=te.find(e=>!e.allDay);
+    p.push(te.length?`Domani: ${te.length} ${te.length===1?"impegno":"impegni"}${f?`, il primo alle ${esc(f.start)} (${esc(f.title)})`:""}.`:"Domani hai la giornata libera."); }
+  return `<div class="brief"><span class="ic"><svg ${S}><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></span><div><b>${hello}</b><p>${p.join(" ")}</p></div></div>`;
+}
+
+/* ---------- avvisi ---------- */
+let FIRED={}; try{ FIRED=JSON.parse(localStorage.getItem("agenda.fired")||"{}"); }catch(e){}
+function alertsBetween(a,b){
+  const out=[]; const t0=parse(todayS());
+  for(let k=-1;k<=2;k++){ const ds=ymd(addDays(t0,k));
+    for(const e of eventsOn(ds)){ if(e.alert==null||e.alert<0) continue;
+      const base=parse(ds); const [hh,mm]=(e.allDay?"09:00":e.start).split(":").map(Number); base.setHours(hh,mm,0,0);
+      const at=base.getTime()-e.alert*60000; if(at>a&&at<=b) out.push({key:e.id+"|"+ds,at,e,ds,base}); } }
+  return out.sort((x,y)=>x.at-y.at);
+}
+function nextAlert(){ const n=Date.now(); return alertsBetween(n,n+3*864e5).find(x=>!FIRED[x.key]); }
+let actx=null;
+function chime(){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const t=actx.currentTime;
+  [[0,880],[.18,1175],[.36,1568]].forEach(([d,f])=>{ const o=actx.createOscillator(),g=actx.createGain(); o.type="sine"; o.frequency.value=f; g.gain.setValueAtTime(0,t+d); g.gain.linearRampToValueAtTime(.22,t+d+.02); g.gain.exponentialRampToValueAtTime(.001,t+d+.5); o.connect(g).connect(actx.destination); o.start(t+d); o.stop(t+d+.55); }); }catch(e){} }
+document.addEventListener("touchend",()=>{ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume(); }catch(e){} },{once:true});
+function when(x){ const m=Math.round((x.base.getTime()-Date.now())/60000); const e=x.e;
+  const t=e.allDay?"oggi":`${x.ds===todayS()?"oggi":"domani"} alle ${e.start}`;
+  return m>1?`Tra ${durTxt(m)} · ${t}`:m>=-1?`Adesso · ${t}`:`Iniziato ${durTxt(-m)} fa`; }
+async function fire(x){
+  FIRED[x.key]=Date.now(); try{ localStorage.setItem("agenda.fired",JSON.stringify(FIRED)); }catch(e){}
+  const body=when(x)+(x.e.place?` · ${x.e.place}`:"");
+  $("#alarm .ic").innerHTML=BELL; $("#alT").textContent=x.e.title; $("#alS").textContent=body; $("#alarm").hidden=false;
+  chime(); if(navigator.vibrate) navigator.vibrate([250,120,250]);
+  if("Notification" in window&&Notification.permission==="granted"){
+    try{ const reg=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration(); const o={body,tag:x.key,icon:"icon-192.png",badge:"icon-192.png"};
+      if(reg) reg.showNotification(x.e.title,o); else new Notification(x.e.title,o); }catch(e){}
+  }
+}
+$("#alOk").onclick=()=>{ $("#alarm").hidden=true; };
+function checkAlerts(){
+  const n=Date.now();
+  // pulizia vecchi
+  for(const k in FIRED) if(n-FIRED[k]>4*864e5) delete FIRED[k];
+  alertsBetween(n-60*60000,n).filter(x=>!FIRED[x.key]).forEach(fire);
+}
+setInterval(checkAlerts,15000); setTimeout(checkAlerts,1500);
+
+function notifState(){
+  const st=$("#notifSt"), tx=$("#notifTxt");
+  if(!("Notification" in window)){ st.textContent="Non disponibili"; st.className="status off";
+    tx.textContent=/iP(hone|ad)/.test(navigator.userAgent)&&!navigator.standalone?"Su iPhone aggiungi prima l'app alla schermata Home, poi riaprila da lì":"Questo browser non supporta le notifiche"; return; }
+  const p=Notification.permission;
+  st.textContent=p==="granted"?"Attive":p==="denied"?"Bloccate":"Spente"; st.className="status "+(p==="granted"?"on":"off");
+  const nx=nextAlert();
+  tx.textContent=p==="denied"?"Riattivale da Impostazioni › Notifiche › Agenda":nx?`Prossimo avviso: ${nx.e.title}, ${new Date(nx.at).toLocaleString("it-IT",{weekday:"short",hour:"2-digit",minute:"2-digit"})}`:"Avvisi degli appuntamenti mentre l'app è aperta";
+}
+$("#notifBtn").onclick=async()=>{
+  if(!("Notification" in window)){ notifState(); toast("Aggiungi l'app alla Home e riaprila da lì"); return; }
+  if(Notification.permission==="default"){ try{ await Notification.requestPermission(); }catch(e){} }
+  notifState();
+  if(Notification.permission==="granted"){ toast("Notifiche attive"); chime(); }
+};
+
+/* ---------- Calendario iPhone (.ics) ---------- */
+const icsEsc=s=>String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n");
+const icsD=ds=>ds.replace(/-/g,"");
+const icsDT=(ds,hm)=>`${icsD(ds)}T${hm.replace(":","")}00`;
+function buildIcs(list){
+  const now=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Agenda Marco//IT","CALSCALE:GREGORIAN","METHOD:PUBLISH"];
+  for(const e of list){
+    L.push("BEGIN:VEVENT",`UID:${e.id}@agenda`,`DTSTAMP:${now}`,`SUMMARY:${icsEsc(e.title)}`);
+    if(e.allDay){ L.push(`DTSTART;VALUE=DATE:${icsD(e.date)}`,`DTEND;VALUE=DATE:${icsD(ymd(addDays(parse(e.date),1)))}`); }
+    else { const end=e.end&&e.end>e.start?e.end:addHour(e.start); L.push(`DTSTART:${icsDT(e.date,e.start)}`,`DTEND:${icsDT(e.date,end)}`); }
+    if(e.rep&&e.rep!=="none") L.push(`RRULE:FREQ=${{day:"DAILY",week:"WEEKLY",month:"MONTHLY",year:"YEARLY"}[e.rep]}`);
+    (e.skip||[]).forEach(d=>L.push(e.allDay?`EXDATE;VALUE=DATE:${icsD(d)}`:`EXDATE:${icsDT(d,e.start)}`));
+    if(e.place) L.push(`LOCATION:${icsEsc(e.place)}`);
+    if(e.note) L.push(`DESCRIPTION:${icsEsc(e.note)}`);
+    L.push(`CATEGORIES:${(CATS.find(c=>c[0]===ck(e.cat))||[0,"Altro"])[1]}`);
+    if(e.alert!=null&&e.alert>=0){ const off=e.allDay?540-e.alert:-e.alert; L.push("BEGIN:VALARM","ACTION:DISPLAY",`DESCRIPTION:${icsEsc(e.title)}`,`TRIGGER:${off<0?"-":""}PT${Math.abs(off)}M`,"END:VALARM"); }
+    L.push("END:VEVENT");
+  }
+  L.push("END:VCALENDAR"); return L.join("\r\n");
+}
+function openIcs(text,name){
+  const blob=new Blob([text],{type:"text/calendar;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const w=window.open(url,"_blank");
+  if(!w){ const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+$("#icsAllBtn").onclick=()=>{ if(!DB.events.length){ toast("Nessun appuntamento da copiare"); return; } openIcs(buildIcs(DB.events),"agenda.ics"); };
+
 /* ---------- toast con annulla ---------- */
 let tt;
 function toast(msg,undo){
@@ -651,7 +787,7 @@ setInterval(()=>{ const t=todayS(); if(t!==lastDay){ if(sel===lastDay) sel=t; la
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&!busy()){ const t=todayS(); if(t!==lastDay){ sel=t; lastDay=t; } render(); } });
 
 if("serviceWorker" in navigator&&location.protocol==="https:") navigator.serviceWorker.register("sw.js").catch(()=>{});
-window.__agenda={occurs};
+window.__agenda={occurs,buildIcs,alertsBetween};
 render();
 })();
 </script>
